@@ -1,0 +1,115 @@
+
+' =============================================================================================
+'|                                                                                            |
+'|                    Code Snippet     Copy&Pasteで利用してください                           |
+'|                                                                                            |
+'==============================================================================================
+
+
+'=======================ファイルをひとつ開く=======================================
+    Dim myFile As Variant
+    Dim myWorkbook as Workbook
+
+
+    MsgBox "〇〇のファイルを選択してください。"
+    
+    myFile = Application.GetOpenFilename _
+        (Title:="My File", _
+        MultiSelect:=False)
+
+   
+    If myFile <> False Then
+        Set myWorkbook = Workbooks.Open(myFile)
+    Else
+        MsgBox "ファイルが選択されなかったため、マクロを終了します。", vbInformation
+        End
+    End If
+
+
+'=======================最終行を取得する==============================================
+
+    Dim lastRow As Long
+    
+    With ActiveSheet.UsedRange
+        lastRow = .Rows(.Rows.Count).Row
+    End With
+
+
+'=======================最終行、最終列を取得する==============================================
+
+    Dim lastRow As Long
+    Dim lastColumn As Long
+    
+    With ActiveSheet.UsedRange
+        lastRow = .Rows(.Rows.Count).Row
+        lastColumn = .Columns(.Columns.Count).Column
+    End With
+
+
+'=======================特定の列で、最終行を取得する==========================================
+'=======================特定の行で、最終列を取得する==========================================
+
+    Dim lastRow As Long
+    Dim lastColumn As Long
+    
+    lastRow = Cells(Rows.Count, 1).End(xlUp).Row    '<-- A列で調べる場合
+    lastColumn = Cells(1, Columns.Count).End(xlToLeft).Column  '<-- １行目で調べる場合
+
+
+'=======================ファイルを複数開く=====================================================
+
+
+    Dim myFile As Variant
+    Dim myWorkbook() As Workbook
+    Dim k As Long
+
+
+    MsgBox "〇〇のファイルをすべて選択してください。"
+    
+    myFile = Application.GetOpenFilename _
+    (Title:="My Files", _
+    MultiSelect:=True)
+    
+    
+    If IsArray(myFile) Then
+        Redim myWorkbook(UBound(myFile) - LBound(myFile) + 1)
+
+        For k = LBound(myFile) To UBound(myFile)
+            Set myWorkbook(k) = Workbooks.Open(myFile(k))
+        Next k
+    Else
+         MsgBox "ファイルが選択されなかったため、マクロを終了します。", vbInformation
+         End
+    End If
+    
+    For k = LBound(myfile) To UBound(myfile)
+         myWorkbook(k).Activate
+    
+        '各ファイルに対する処理をここに書く-------------------
+    
+         myWorkbook(k).Close(False)
+    Next k
+
+
+
+'=======================ファイル名に日時を入れて、保存する=======================================
+'=======================拡張子xlsxで保存する=====================================================
+
+    '--- String型の myPath にはすでに値が入っているとして ------
+
+    Dim todayString As String
+
+    todayString = Format(Now, "yyyymmdd_HhNnSs")
+    
+    ActiveWorkbook.SaveAs Filename:= myPath & "\" & "FileName" & "_" & todayString & ".xlsx", _
+    FileFormat:=xlWorkbookDefault, _
+    Local:=True
+
+
+'=======================ファイルの保存場所を聞く=================================================
+
+    tempPath = Application.GetSaveAsFilename( _
+                    InitialFileName:="Result.xlsx", filefilter:="Excelファイル, *.xlsx")
+
+    ActiveWorkbook.SaveAs Filename:=tempPath
+
