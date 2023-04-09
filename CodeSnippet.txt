@@ -72,7 +72,7 @@
     
     
     If IsArray(myFile) Then
-        Redim myWorkbook(UBound(myFile) - LBound(myFile) + 1)
+        Redim myWorkbook(UBound(myFile))
 
         For k = LBound(myFile) To UBound(myFile)
             Set myWorkbook(k) = Workbooks.Open(myFile(k))
@@ -99,7 +99,7 @@
 
     Dim todayString As String
 
-    todayString = Format(Now, "yyyymmdd_HhNnSs")
+    todayString = Format(Now, "yyyymmdd_hhnnss")
     
     ActiveWorkbook.SaveAs Filename:= myPath & "\" & "FileName" & "_" & todayString & ".xlsx", _
     FileFormat:=xlWorkbookDefault, _
